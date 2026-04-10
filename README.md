@@ -24,6 +24,8 @@ This repository will be updated regularly with new tools, references, and notes.
    cd cybersecurity-tools-directory
 3. Explore the tools and documentation.
 
+---
+
 ## 🤝 Contribution
 Contributions are welcome!
 - Fork the repo
@@ -31,10 +33,14 @@ Contributions are welcome!
 - Commit your changes
 - Open a Pull Request
 
+---
+
 ## 📌 Roadmap
 - Add categorized lists of tools (network, web, cryptography, monitoring)
 - Include usage examples and tutorials
 - Expand documentation with references and learning resources
+
+---
 
 ## 📜 License
 This project is licensed under the MIT License.
