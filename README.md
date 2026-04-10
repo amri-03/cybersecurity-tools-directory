@@ -3,7 +3,7 @@
 A curated collection of cybersecurity tools and resources — built as a learning project and stepping stone in my career journey.  
 This repository will be updated regularly with new tools, references, and notes.
 
-🌐 Explore more about me and my work here: [My Portfolio](https://your-portfolio-link.com)
+🌐 Explore more about me and my work here: [My Portfolio](https://amri-03.github.io/mywebsite/)
 
 ---
 
