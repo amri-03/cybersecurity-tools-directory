@@ -17,4 +17,4 @@ This repository will be updated regularly with new tools, references, and notes.
 ## 🚀 Getting Started
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/cybersecurity-tools-directory.git
+   git clone https://github.com/amri-03/cybersecurity-tools-directory.git
