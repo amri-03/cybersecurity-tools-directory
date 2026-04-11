@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>My Roadmap Dashboard</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f9f9f7; color: #1a1a1a; padding: 24px 16px; max-width: 600px; margin: 0 auto; }
+  .section-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #888; margin-bottom: 8px; }
+  .card { background: #ffffff; border: 0.5px solid #e5e5e0; border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 12px; }
+  .phase-bar { height: 6px; border-radius: 3px; background: #e5e5e0; margin-top: 8px; overflow: hidden; }
+  .phase-fill { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
+  .task-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 0.5px solid #e5e5e0; cursor: pointer; }
+  .task-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .task-row:first-child { padding-top: 0; }
+  .checkbox { width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid #ccc; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+  .checkbox.done { background: #e1f5ee; border-color: #1D9E75; }
+  .checkmark { width: 8px; height: 6px; opacity: 0; transition: opacity 0.15s; }
+  .checkbox.done .checkmark { opacity: 1; }
+  .task-text { font-size: 14px; color: #1a1a1a; transition: color 0.15s; flex: 1; }
+  .task-text.done { color: #aaa; text-decoration: line-through; }
+  .tag { font-size: 11px; padding: 2px 8px; border-radius: 4px; font-weight: 500; }
+  .tag-build { background: #E1F5EE; color: #0F6E56; }
+  .tag-learn { background: #E6F1FB; color: #185FA5; }
+  .tag-research { background: #FAEEDA; color: #854F0B; }
+  .log-input { width: 100%; border: 0.5px solid #e5e5e0; border-radius: 8px; padding: 10px 12px; font-size: 13px; font-family: inherit; color: #1a1a1a; background: #fff; resize: none; min-height: 64px; margin-top: 8px; }
+  .log-input:focus { outline: none; border-color: #bbb; }
+  .log-btn { margin-top: 8px; margin-right: 8px; padding: 6px 16px; font-size: 13px; border: 0.5px solid #ccc; border-radius: 8px; background: transparent; color: #1a1a1a; cursor: pointer; font-family: inherit; }
+  .log-btn:hover { background: #f4f4f2; }
+  .log-entry { font-size: 13px; color: #555; padding: 6px 0; border-bottom: 0.5px solid #e5e5e0; line-height: 1.5; }
+  .log-entry:last-child { border-bottom: none; }
+  .log-date { font-size: 11px; color: #aaa; margin-bottom: 2px; }
+  .metric-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-bottom: 12px; }
+  .metric { background: #f4f4f2; border-radius: 8px; padding: 12px; text-align: center; }
+  .metric-num { font-size: 22px; font-weight: 500; color: #1a1a1a; }
+  .metric-lbl { font-size: 11px; color: #888; margin-top: 2px; }
+  .phase-badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 4px; margin-bottom: 10px; background: #E1F5EE; color: #0F6E56; }
+  .streak-dots { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 8px; }
+  .dot { width: 20px; height: 20px; border-radius: 4px; background: #f0f0ee; cursor: pointer; transition: background 0.15s; }
+  .dot.active { background: #1D9E75; }
+  .dot.today { border: 1.5px solid #1D9E75; }
+  .chapter-row { display: flex; align-items: center; gap: 10px; padding: 6px 0; }
+  .dot-active { width: 8px; height: 8px; border-radius: 50%; background: #1D9E75; flex-shrink: 0; }
+  .dot-inactive { width: 8px; height: 8px; border-radius: 50%; background: #ddd; flex-shrink: 0; }
+  @media (prefers-color-scheme: dark) {
+    body { background: #1a1a1a; color: #e0e0de; }
+    .card { background: #242424; border-color: #333; }
+    .metric { background: #2a2a2a; }
+    .metric-num { color: #e0e0de; }
+    .task-text { color: #e0e0de; }
+    .task-text.done { color: #555; }
+    .checkbox { border-color: #555; }
+    .log-input { background: #242424; border-color: #333; color: #e0e0de; }
+    .log-btn { border-color: #444; color: #e0e0de; }
+    .log-btn:hover { background: #2a2a2a; }
+    .log-entry { color: #999; border-color: #333; }
+    .task-row { border-color: #333; }
+    .dot { background: #2a2a2a; }
+    .section-label { color: #666; }
+  }
+</style>
+</head>
+<body>
+
+<div style="padding: 0.5rem 0 1.5rem;">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+    <span style="font-size:20px; font-weight:500;">My roadmap</span>
+    <span id="today-date" style="font-size:12px; color:#888;"></span>
+  </div>
+  <p style="font-size:13px; color:#888; margin-bottom:20px;">Cybersec Tools Directory → Internship → MNC → Freedom</p>
+
+  <div class="metric-grid">
+    <div class="metric">
+      <div class="metric-num" id="tasks-done">0</div>
+      <div class="metric-lbl">tasks done</div>
+    </div>
+    <div class="metric">
+      <div class="metric-num" id="streak-count">0</div>
+      <div class="metric-lbl">day streak</div>
+    </div>
+    <div class="metric">
+      <div class="metric-num">40</div>
+      <div class="metric-lbl">days to go</div>
+    </div>
+  </div>
+
+  <div class="section-label">current phase</div>
+  <div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <span style="font-size:14px; font-weight:500;">Phase 0 — pre-exam warmup</span>
+      <span class="phase-badge">Apr 10–15</span>
+    </div>
+    <p style="font-size:12px; color:#888; margin-top:4px; margin-bottom:6px;">Light touch. Keep the habit alive.</p>
+    <div class="phase-bar">
+      <div class="phase-fill" id="phase-fill" style="width:0%; background:#1D9E75;"></div>
+    </div>
+    <div style="display:flex; justify-content:space-between; margin-top:4px;">
+      <span style="font-size:11px; color:#aaa;">0%</span>
+      <span style="font-size:11px; color:#aaa;" id="phase-pct">0 / 4 tasks</span>
+    </div>
+  </div>
+
+  <div class="section-label">today's tasks</div>
+  <div class="card">
+    <div id="task-list">
+      <div class="task-row" onclick="toggleTask(this)">
+        <div class="checkbox"><svg class="checkmark" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="#1D9E75" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <span class="task-text">30 min Python basics practice</span>
+        <span class="tag tag-learn">learn</span>
+      </div>
+      <div class="task-row" onclick="toggleTask(this)">
+        <div class="checkbox"><svg class="checkmark" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="#1D9E75" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <span class="task-text">Research 2 cybersec tools for directory</span>
+        <span class="tag tag-research">research</span>
+      </div>
+      <div class="task-row" onclick="toggleTask(this)">
+        <div class="checkbox"><svg class="checkmark" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="#1D9E75" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <span class="task-text">5 new Linux commands</span>
+        <span class="tag tag-learn">learn</span>
+      </div>
+      <div class="task-row" onclick="toggleTask(this)">
+        <div class="checkbox"><svg class="checkmark" viewBox="0 0 8 6" fill="none"><path d="M1 3l2 2 4-4" stroke="#1D9E75" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <span class="task-text">Create GitHub repo + first README</span>
+        <span class="tag tag-build">build</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">7-day streak</div>
+  <div class="card">
+    <p style="font-size:12px; color:#888;">Tap a day when you show up. Don't break the chain.</p>
+    <div class="streak-dots" id="streak-dots"></div>
+  </div>
+
+  <div class="section-label">daily log</div>
+  <div class="card">
+    <p style="font-size:12px; color:#888;">What did you do today? Even one line counts.</p>
+    <textarea class="log-input" id="log-input" placeholder="e.g. Built the card layout for cybersec directory. Got stuck on flexbox, figured it out..."></textarea>
+    <div>
+      <button class="log-btn" onclick="addLog()">Save entry</button>
+    </div>
+    <div id="log-entries" style="margin-top:12px;"></div>
+  </div>
+
+  <div class="section-label">the big picture</div>
+  <div class="card">
+    <div style="display:flex; flex-direction:column; gap:8px;">
+      <div class="chapter-row">
+        <div class="dot-active"></div>
+        <span style="font-size:13px; font-weight:500;">Chapter 1 — Get in</span>
+        <span style="font-size:11px; color:#aaa; margin-left:auto;">now</span>
+      </div>
+      <div class="chapter-row">
+        <div class="dot-inactive"></div>
+        <span style="font-size:13px; color:#888;">Chapter 2 — Get good</span>
+        <span style="font-size:11px; color:#aaa; margin-left:auto;">MNC life</span>
+      </div>
+      <div class="chapter-row">
+        <div class="dot-inactive"></div>
+        <span style="font-size:13px; color:#888;">Chapter 3 — Get dangerous</span>
+        <span style="font-size:11px; color:#aaa; margin-left:auto;">cybersec</span>
+      </div>
+      <div class="chapter-row">
+        <div class="dot-inactive"></div>
+        <span style="font-size:13px; color:#888;">Chapter 4 — Get free</span>
+        <span style="font-size:11px; color:#aaa; margin-left:auto;">your terms</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const today = new Date();
+  document.getElementById('today-date').textContent = today.toLocaleDateString('en-IN', {weekday:'short', day:'numeric', month:'short'});
+
+  const dotsEl = document.getElementById('streak-dots');
+  for(let i=6; i>=0; i--) {
+    const d = document.createElement('div');
+    const day = new Date(today); day.setDate(today.getDate()-i);
+    d.className = 'dot' + (i===0?' today':'');
+    d.title = days[day.getDay()];
+    d.dataset.active = 'false';
+    d.onclick = function() {
+      const isActive = this.dataset.active==='true';
+      this.dataset.active = (!isActive).toString();
+      this.style.background = !isActive ? '#1D9E75' : '';
+      updateStreak();
+    };
+    dotsEl.appendChild(d);
+  }
+
+  function updateStreak() {
+    const active = document.querySelectorAll('.dot[data-active="true"]').length;
+    document.getElementById('streak-count').textContent = active;
+  }
+
+  function toggleTask(row) {
+    const cb = row.querySelector('.checkbox');
+    const txt = row.querySelector('.task-text');
+    const isDone = cb.classList.contains('done');
+    cb.classList.toggle('done', !isDone);
+    txt.classList.toggle('done', !isDone);
+    const done = document.querySelectorAll('.checkbox.done').length;
+    const total = document.querySelectorAll('.checkbox').length;
+    document.getElementById('tasks-done').textContent = done;
+    const pct = Math.round((done/total)*100);
+    document.getElementById('phase-fill').style.width = pct+'%';
+    document.getElementById('phase-pct').textContent = done+' / '+total+' tasks';
+  }
+
+  const logs = [];
+  function addLog() {
+    const val = document.getElementById('log-input').value.trim();
+    if(!val) return;
+    const now = new Date();
+    logs.unshift({text: val, date: now.toLocaleDateString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})});
+    document.getElementById('log-input').value = '';
+    renderLogs();
+  }
+
+  function renderLogs() {
+    const el = document.getElementById('log-entries');
+    el.innerHTML = logs.slice(0,5).map(l=>`<div class="log-entry"><div class="log-date">${l.date}</div>${l.text}</div>`).join('');
+  }
+</script>
+</body>
+</html>
