@@ -3,7 +3,7 @@
 ## 🌐 Live Demo
 👉 https://amri-03.github.io/cybersecurity-tools-directory/
 
-A curated collection of cybersecurity tools and resources — built as a learning project and stepping stone in my career journey.  
+A structured and continuously evolving directory of cybersecurity tools, categorized for practical learning and real-world usage.
 This repository will be updated regularly with new tools, references, and notes.
 
 🌐 Explore more about me and my work here: [My Portfolio](https://amri-03.github.io/mywebsite/)
