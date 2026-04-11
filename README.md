@@ -10,9 +10,6 @@ This repository will be updated regularly with new tools, references, and notes.
 
 ---
 
-## 📸 Preview
-![Project Preview](./assets/preview.png)
-
 ## 🛠 Tech Stack
 - HTML
 - CSS
