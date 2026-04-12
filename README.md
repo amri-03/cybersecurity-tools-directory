@@ -15,6 +15,8 @@ This repository will be updated regularly with new tools, references, and notes.
 - CSS
 - JavaScript
 
+---
+
 ## 📂 Project Structure
 - **/docs** → Documentation and references  
 - **/tools** → Scripts, utilities, and categorized tools  
