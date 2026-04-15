@@ -54,3 +54,5 @@ Contributions are welcome!
 
 ## 📜 License
 This project is licensed under the MIT License.
+
+Built and deployed on April 11, 2026. My first completed project.
