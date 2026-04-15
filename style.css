@@ -1,0 +1,13 @@
+body {
+    background: linear-gradient(135deg, #0a0a1a 0%, #0d1b3e 50%, #0a0a1a 100%);
+    background-attachment: fixed;
+}
+
+#main-section {
+    margin-top: 80px;
+}
+
+#hero {
+    text-align: center;
+    padding: 60px 0 40px;
+}
